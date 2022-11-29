@@ -55,13 +55,8 @@ defmodule PentoWeb.DemographicLive.Form do
   use PentoWeb, :live_component
   alias Pento.Survey
   alias Pento.Survey.Demographic
-  alias PentoWeb.SurveyLive
 
   def update(assigns, socket) do
-    IO.puts "ON COMPONENT UPDATE:"
-    IO.inspect Process.info(self(), :messages)
-    send(self(), {:check, "hello???"})
-    IO.inspect socket
     {
       :ok,
        assign(socket, :update_demo, "hello")
@@ -92,9 +87,7 @@ defmodule PentoWeb.DemographicLive.Form do
     case Survey.create_demographic(demographic_params) do
       {:ok, demographic} ->
         send(self(), {:created_demographic, demographic})
-        IO.inspect Process.info(self(), :messages)
-        SurveyLive.assign_demographic(socket)
-        # socket
+        socket
 
       {:error, %Ecto.Changeset{} = changeset} ->
         assign(socket, changeset: changeset)

@@ -50,17 +50,18 @@
 defmodule PentoWeb.SurveyLive do
   use PentoWeb, :live_view
   alias Pento.{Survey, Catalog}
-  alias PentoWeb.{DemographicLive, RatingLive}
+  alias PentoWeb.{DemographicLive, RatingLive, Endpoint}
+
+  @survey_results_topic "survey_results"
 
   @impl true
   def mount(_params, _session, socket) do
-    IO.inspect(socket.assigns.current_user)
-    IO.inspect self()
-    IO.inspect Process.info(self(), :messages)
-    {:ok,
-     socket
-     |> assign_demographic()
-     |> assign_products()}
+
+    updated_socket = socket
+    |> assign_demographic()
+    |> assign_products()
+
+    {:ok, updated_socket}
   end
 
 @impl true
@@ -73,14 +74,10 @@ defmodule PentoWeb.SurveyLive do
 #     {:noreply, handle_rating_created(socket, updated_product, product_index)}
 #   end
 
-  def handle_info({:check, msg}, socket) do
-    IO.puts msg
-    {:noreply, socket}
+  def handle_info({:created_rating, updated_product, product_index}, socket) do
+    IO.puts "handle rating recieved"
+    {:noreply, handle_rating_created(socket, updated_product, product_index)}
   end
-
-  # def handle_info({:created_rating, updated_product, product_index}, socket) do
-  #   {:noreply, handle_rating_created(socket, updated_product, product_index)}
-  # end
 
   # def handle_rating_created(%{ assigns: %{products: products}} = socket, updated_product, product_index) do
   #   socket
@@ -108,6 +105,10 @@ defmodule PentoWeb.SurveyLive do
          updated_product,
          product_index
        ) do
+    Endpoint.broadcast(@survey_results_topic, "rating_created", %{})
+    IO.puts "RATING CREATED MESSAGE BROADCAST"
+
+
     socket
     |> put_flash(:info, "Rating submitted successfully")
     |> assign(
@@ -121,4 +122,5 @@ defmodule PentoWeb.SurveyLive do
       :demographic,
       Survey.get_demographic_by_user(current_user))
   end
+
 end

@@ -5,6 +5,9 @@ defmodule PentoWeb.RatingLive.Form do
   alias PentoWeb.SurveyLive
 
   def update(assigns, socket) do
+    # send(self(), {:check, "heyo"})
+    IO.puts "self of component"
+    IO.inspect self()
     {:ok,
     socket
     |> assign(assigns)
@@ -45,9 +48,9 @@ defmodule PentoWeb.RatingLive.Form do
     case Survey.create_rating(rating_params) do
       {:ok, rating} ->
         product = %{product | ratings: [rating]}
-        # send(self(), {:created_rating, product, product_index})
-        # socket
-        SurveyLive.handle_rating_created(socket, product, product_index)
+        send(self(), {:created_rating, product, product_index})
+        IO.puts "handle rating sent"
+        socket
       {:error, %Ecto.Changeset{} = changeset} ->
         assign(socket, changeset: changeset)
     end
