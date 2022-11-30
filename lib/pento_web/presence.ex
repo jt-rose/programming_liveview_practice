@@ -17,8 +17,6 @@ defmodule PentoWeb.Presence do
   end
 
   def list_products_and_users do
-    IO.puts "PRESENCE-LIST"
-    IO.inspect Presence.list(@user_activity_topic)
     Presence.list(@user_activity_topic)
     |> Enum.map(&extract_product_with_users/1)
   end
@@ -35,6 +33,25 @@ defmodule PentoWeb.Presence do
 
   def users_from_meta_map(meta_map) do
     get_in(meta_map, [:users])
+  end
+
+  def list_users_taking_surveys do
+    # IO.puts "PRESENCE-LIST"
+    # survey_activity = Presence.list(@survey_activity_topic)["survey_activity"]
+    # IO.inspect hd(survey_activity[:metas])[:users]
+    # for p <- Presence.list(@survey_activity_topic) do
+    #   IO.inspect p
+    # end
+
+    Presence.list(@survey_activity_topic)
+    |> Enum.map(&extract_users/1)
+    |> List.flatten()
+    |> Enum.uniq()
+
+  end
+
+  def extract_users({ _s, %{metas: metas}}) do
+    users_from_metas_list(metas)
   end
 
 end

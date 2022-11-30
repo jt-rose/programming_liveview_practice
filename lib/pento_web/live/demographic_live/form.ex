@@ -57,6 +57,7 @@ defmodule PentoWeb.DemographicLive.Form do
   alias Pento.Survey.Demographic
 
   def update(assigns, socket) do
+
     {
       :ok,
        assign(socket, :update_demo, "hello")
@@ -102,6 +103,7 @@ defmodule PentoWeb.DemographicLive.Form do
 
     assign(socket, :changeset, changeset)
   end
+
 
 
 end

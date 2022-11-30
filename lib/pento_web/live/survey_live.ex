@@ -51,11 +51,14 @@ defmodule PentoWeb.SurveyLive do
   use PentoWeb, :live_view
   alias Pento.{Survey, Catalog}
   alias PentoWeb.{DemographicLive, RatingLive, Endpoint}
+  alias PentoWeb.Presence
 
   @survey_results_topic "survey_results"
 
   @impl true
   def mount(_params, _session, socket) do
+
+    maybe_track_user(socket)
 
     updated_socket = socket
     |> assign_demographic()
@@ -121,6 +124,12 @@ defmodule PentoWeb.SurveyLive do
     assign(socket,
       :demographic,
       Survey.get_demographic_by_user(current_user))
+  end
+
+  def maybe_track_user(socket) do
+    if connected?(socket) do
+      Presence.track_user_survey(self(), socket.assigns.current_user.email)
+    end
   end
 
 end

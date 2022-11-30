@@ -9,7 +9,7 @@ defmodule PentoWeb.UserActivityLive do
   end
 
   def assign_user_activity(socket) do
-    IO.inspect Presence.list_products_and_users()
+    # IO.inspect Presence.list_products_and_users()
     assign(socket, :user_activity, Presence.list_products_and_users())
   end
 end
