@@ -21,6 +21,7 @@ defmodule PentoWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    live "/game/:puzzle", Pento.GameLive
 
     # live "/guess", WrongLive
   end
